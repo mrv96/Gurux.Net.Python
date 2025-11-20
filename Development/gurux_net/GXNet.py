@@ -68,6 +68,8 @@ class GXNet(IGXMedia):
         self.__host_name = name
         ###Used port.###
         self.__port = portNo
+        ###Used local port.###
+        self.__localPort = 0
         ###Is server or client.###
         self.server = False
         ###Created socket.###
@@ -295,11 +297,13 @@ class GXNet(IGXMedia):
                     self.__socket = socket.socket(
                         self.__getInet(self.__host_name), socket.SOCK_STREAM
                     )
+                    self.__socket.bind(('', self.__localPort))
                     self.__socket.connect((self.__host_name, self.__port))
             else:
                 self.__socket = socket.socket(
                     self.__getInet(self.__host_name), socket.SOCK_DGRAM
                 )
+                self.__socket.bind(('', self.__localPort))
                 self.__socket.connect((self.__host_name, self.__port))
             self.__notifyMediaStateChange(MediaState.OPEN)
             if not self.server or self.protocol == NetworkType.UDP:
@@ -377,6 +381,17 @@ class GXNet(IGXMedia):
     port = property(__getPort, __setPort)
     """Port number."""
 
+    def __getLocalPort(self):
+        return self.__localPort
+
+    def __setLocalPort(self, value):
+        if self.__localPort != value:
+            self.__localPort = value
+            self.__notifyPropertyChanged("localPort")
+
+    localPort = property(__getLocalPort, __setLocalPort)
+    """Local port number."""
+
     def receive(self, args):
         return self.__syncBase.receive(args)
 
@@ -407,7 +422,11 @@ class GXNet(IGXMedia):
             sb += str(self.__port)
             sb += "</Port>"
             sb += nl
-
+        if self.__localPort != 0:
+            sb += "<LocalPort>"
+            sb += str(self.__localPort)
+            sb += "</LocalPort>"
+            sb += nl
         if self.__protocol != NetworkType.TCP:
             sb += "<Protocol>"
             sb += str(int(self.__protocol))
@@ -419,15 +438,17 @@ class GXNet(IGXMedia):
         # Reset to default values.
         self.__host_name = None
         self.__port = 0
+        self.__localPort = 0
         self.__protocol = NetworkType.TCP
 
     def copy(self, target):
         self.__port = target.port
         self.__host_name = target.hostName
+        self.__localPort = target.localPort
         self.__protocol = target.protocol
 
     def getName(self):
-        tmp = self.__host_name + " " + self.__port
+        tmp = self.__host_name + " " + self.__port + " " + self.__localPort
         if self.__protocol == NetworkType.UDP:
             tmp += "UDP"
         else:
@@ -458,6 +479,8 @@ class GXNet(IGXMedia):
             raise ValueError(_GXLocalizer.gettext("Invalid port."))
         if not self.hostName:
             raise ValueError(_GXLocalizer.gettext("Invalid host name."))
+        if not self.server and self.__localPort == 0:
+            raise ValueError(_GXLocalizer.gettext("Invalid port."))
 
     def __getEop(self):
         return self.__eop
@@ -478,4 +501,7 @@ class GXNet(IGXMedia):
             tmp = tmp + self.__host_name
         elif self.server:
             tmp = tmp + socket.gethostname()
-        return tmp + ":" + str(self.__port)
+        tmp = tmp + ":" + str(self.__port)
+        if not self.server:
+            tmp = tmp + " " + str(self.__localPort)
+        return tmp

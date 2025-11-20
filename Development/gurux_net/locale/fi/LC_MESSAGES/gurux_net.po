@@ -44,14 +44,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: GXNet.py:457
+#: GXNet.py:478
 msgid "Invalid port."
 msgstr "Virheellinen portti."
 
-#: GXNet.py:459
+#: GXNet.py:480
 msgid "Invalid host name."
 msgstr "Virheellinen isäntänimi."
 
-#: GXNet.py:475
+#: GXNet.py:499
 msgid "Server"
 msgstr "Palvelin"
