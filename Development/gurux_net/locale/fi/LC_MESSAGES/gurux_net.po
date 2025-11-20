@@ -52,6 +52,10 @@ msgstr "Virheellinen portti."
 msgid "Invalid host name."
 msgstr "Virheellinen isäntänimi."
 
+#: GXNet.py:482
+msgid "Invalid local port."
+msgstr "Virheellinen paikallinen portti."
+
 #: GXNet.py:499
 msgid "Server"
 msgstr "Palvelin"

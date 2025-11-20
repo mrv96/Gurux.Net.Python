@@ -480,7 +480,7 @@ class GXNet(IGXMedia):
         if not self.hostName:
             raise ValueError(_GXLocalizer.gettext("Invalid host name."))
         if not self.server and self.__localPort == 0:
-            raise ValueError(_GXLocalizer.gettext("Invalid port."))
+            raise ValueError(_GXLocalizer.gettext("Invalid local port."))
 
     def __getEop(self):
         return self.__eop
