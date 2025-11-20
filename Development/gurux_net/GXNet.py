@@ -450,9 +450,9 @@ class GXNet(IGXMedia):
     def getName(self):
         tmp = self.__host_name + " " + self.__port + " " + self.__localPort
         if self.__protocol == NetworkType.UDP:
-            tmp += "UDP"
+            tmp += " UDP"
         else:
-            tmp += "TCP/IP"
+            tmp += " TCP/IP"
         return tmp
 
     #Localize error messages.
